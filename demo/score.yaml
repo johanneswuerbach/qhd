@@ -1,0 +1,41 @@
+apiVersion: score.dev/v1b1
+metadata:
+  name: app
+
+containers:
+  app:
+    image: registry.humanitec.io/public/resource-pack-tester
+    command: ["/opt/service/postgresapp"]
+    variables:
+      PORT: "3000"
+      DB_HOST: ${resources.db.host}
+      DB_PORT: ${resources.db.port}
+      DB_USERNAME: ${resources.db.username}
+      DB_PASSWORD: ${resources.db.password}
+      DB_NAME: ${resources.db.name}
+    livenessProbe:
+      httpGet:
+        path: /health
+        port: 3000
+    readinessProbe:
+      httpGet:
+        path: /alive
+        port: 3000
+
+service:
+  ports:
+    http:
+      port: 3000
+      targetPort: 3000
+
+resources:
+  dns:
+    type: dns
+  route:
+    type: route
+    params:
+      host: ${resources.dns.host}
+      path: /
+      port: 3000
+  db:
+    type: postgres
