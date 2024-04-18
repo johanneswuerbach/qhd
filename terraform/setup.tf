@@ -40,7 +40,8 @@ resource "helm_release" "humanitec_agent" {
   namespace        = "humanitec-agent"
   create_namespace = true
 
-  chart = "./charts/humanitec-agent"
+  repository = "oci://ghcr.io/humanitec/charts"
+  chart      = "humanitec-agent"
 
   set {
     name  = "humanitec.org"
